@@ -2,8 +2,8 @@
 # Based on VintedScanner structure adapted for Kleinanzeigen
 
 # Telegram Token and ChatID for notifications
-telegram_bot_token = "8218691814:AAEZzQRMxjidAMeJzmyUzkxwRciPRDpct6c"
-telegram_chat_id = "-1002742804558"
+telegram_bot_token = "8028751125:AAEky-PBAuaf5J8_8LcZPRnbR7qZEr1ocw4"
+telegram_chat_id = "-1002707972747"
 
 # Kleinanzeigen URL
 kleinanzeigen_url = "https://www.kleinanzeigen.de"
@@ -12,7 +12,7 @@ kleinanzeigen_url = "https://www.kleinanzeigen.de"
 # Adapted for real Kleinanzeigen structure
 topics = {
     "GGL": {
-        "thread_id": 7831,
+        "thread_id": 2,
         "summary_count": 3,
         "query": {
             "categoryId": "156",
@@ -26,7 +26,7 @@ topics = {
         "require_shipping": True,
     },
     "Rick_Owens2": {
-        "thread_id": 7915,
+        "thread_id": 3,
         "summary_count": 3,
         "query": {
             "categoryId": "160,158,156",
@@ -40,7 +40,7 @@ topics = {
         "require_shipping": True,
     },
     "Rick_Owens": {
-        "thread_id": 7915,
+        "thread_id": 7,
         "summary_count": 3,
         "query": {
             "categoryId": "160,158,156",
@@ -54,7 +54,7 @@ topics = {
         "require_shipping": True,
     },
     "Yohji_Yamamoto": {
-        "thread_id": 331,
+        "thread_id": 7,
         "summary_count": 3,
         "query": {
             "categoryId": "160,158,156",
@@ -68,7 +68,7 @@ topics = {
         "require_shipping": True,
     },
     "Y3": {
-        "thread_id": 331,
+        "thread_id": 7,
         "summary_count": 3,
         "query": {
             "categoryId": "160,158,156",
@@ -82,7 +82,7 @@ topics = {
         "require_shipping": True,
     },
     "Maison_Margiela": {
-        "thread_id": 302,
+        "thread_id": 53,
         "summary_count": 3,
         "query": {
             "categoryId": "160,158,154",
@@ -96,7 +96,7 @@ topics = {
         "require_shipping": True,
     },
     "Maison_Margiela2": {
-        "thread_id": 302,
+        "thread_id": 53,
         "summary_count": 3,
         "query": {
             "categoryId": "160,158,154",
@@ -110,7 +110,7 @@ topics = {
         "require_shipping": True,
     },
     "Raf_Simons": {
-        "thread_id": 7968,
+        "thread_id": 9,
         "summary_count": 3,
         "query": {
             "categoryId": "160,158,154",
@@ -124,7 +124,7 @@ topics = {
         "require_shipping": True,
     },
     "New_Rock": {
-        "thread_id": 7975,
+        "thread_id": 8,
         "summary_count": 3,
         "query": {
             "categoryId": "158",
@@ -138,7 +138,7 @@ topics = {
         "require_shipping": True,
     },
     "Alyx": {
-        "thread_id": 7844,
+        "thread_id": 11,
         "summary_count": 3,
         "query": {
             "categoryId": "160,158,154",
@@ -152,7 +152,7 @@ topics = {
         "require_shipping": True,
     },
     "Helmut_Lang": {
-        "thread_id": 7972,
+        "thread_id": 4,
         "summary_count": 3,
         "query": {
             "categoryId": "160,158",
@@ -166,7 +166,7 @@ topics = {
         "require_shipping": True,
     },
     "Thom_Krom": {
-        "thread_id": 334,
+        "thread_id": 1761,
         "summary_count": 3,
         "query": {
             "categoryId": "160,158,154",
@@ -180,12 +180,40 @@ topics = {
         "require_shipping": True,
     },
     "GG2": {
-        "thread_id": 7831,
+        "thread_id": 2,
         "summary_count": 3,
         "query": {
             "categoryId": "156",
             "q": "ggl",
             "maxPrice": "50",
+            "minPrice": "",
+        },
+        "exclude_keywords": "defekt,kaputt,beschadigt,fake,replica",
+        "required_keywords": "",
+        "exclude_locations": "",
+        "require_shipping": True,
+    },
+    "BBS": {
+        "thread_id": 10,
+        "summary_count": 3,
+        "query": {
+            "categoryId": "0",
+            "q": "boris bidjan saberi",
+            "maxPrice": "150",
+            "minPrice": "",
+        },
+        "exclude_keywords": "defekt,kaputt,beschadigt,fake,replica",
+        "required_keywords": "",
+        "exclude_locations": "",
+        "require_shipping": True,
+    },
+    "issac": {
+        "thread_id": 10,
+        "summary_count": 3,
+        "query": {
+            "categoryId": "0",
+            "q": "isaac sellam",
+            "maxPrice": "150",
             "minPrice": "",
         },
         "exclude_keywords": "defekt,kaputt,beschadigt,fake,replica",

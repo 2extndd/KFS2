@@ -36,6 +36,7 @@ logger = logging.getLogger(__name__)
 
 timeoutconnection = 30
 list_analyzed_items = []
+sent_items_log = []
 
 # Headers для имитации реального браузера
 headers = {
@@ -61,6 +62,7 @@ def load_analyzed_item():
             for line in f:
                 if line:
                     list_analyzed_items.append(line.rstrip())
+        logger.info(f"Loaded {len(list_analyzed_items)} analyzed items from database")
     except IOError as e:
         logger.error(f"Error loading analyzed items: {e}")
 
@@ -72,8 +74,50 @@ def save_analyzed_item(item_hash):
     except IOError as e:
         logger.error(f"Error saving analyzed item: {e}")
 
+def load_sent_items():
+    """Загружает лог отправленных товаров"""
+    sent_items_log.clear()
+    try:
+        with open("sent_items_log.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+            sent_items_log.extend(data)
+        logger.info(f"Loaded {len(sent_items_log)} sent items from log")
+    except (IOError, json.JSONDecodeError) as e:
+        logger.info(f"No sent items log found or error loading: {e}")
+
+def save_sent_item(item, thread_id, success=True):
+    """Сохраняет информацию об отправленном товаре"""
+    try:
+        sent_item_info = {
+            "id": item.get("id", ""),
+            "title": item.get("title", ""),
+            "price": item.get("price", ""),
+            "url": item.get("url", ""),
+            "thread_id": thread_id,
+            "sent_at": datetime.now().isoformat(),
+            "success": success
+        }
+        
+        sent_items_log.append(sent_item_info)
+        
+        # Сохраняем в файл
+        with open("sent_items_log.json", "w", encoding="utf-8") as f:
+            json.dump(sent_items_log, f, ensure_ascii=False, indent=2)
+            
+        if success:
+            logger.info(f"Item logged as sent: {item.get('title', 'Unknown')} (ID: {item.get('id', 'N/A')})")
+        else:
+            logger.warning(f"Item logged as failed: {item.get('title', 'Unknown')} (ID: {item.get('id', 'N/A')})")
+            
+    except Exception as e:
+        logger.error(f"Error saving sent item: {e}")
+
+def is_item_already_sent(item_id):
+    """Проверяет, был ли товар уже отправлен"""
+    return any(item.get("id") == item_id for item in sent_items_log)
+
 def send_topic_summary(topic_name, items, thread_id, total_count):
-    """Отправляет последние объявления по топику (не сводку)"""
+    """Отправляет последние объявления по топику (не сводка)"""
     if not items:
         logger.info(f"No items to send for topic '{topic_name}'")
         return
@@ -83,11 +127,16 @@ def send_topic_summary(topic_name, items, thread_id, total_count):
     # Отправляем каждое объявление отдельным сообщением
     for i, item in enumerate(items):
         try:
-            send_telegram_topic_message(item, thread_id, is_new=False)
+            success = send_telegram_topic_message(item, thread_id, is_new=False)
+            if success:
+                save_sent_item(item, thread_id, success=True)
+            else:
+                save_sent_item(item, thread_id, success=False)
             logger.info(f"Sent item {i+1}/{len(items)}: {item['title'][:50]}...")
             time.sleep(1)  # Пауза между сообщениями
         except Exception as e:
             logger.error(f"Error sending item {i+1}: {e}")
+            save_sent_item(item, thread_id, success=False)
             continue
 
 def send_telegram_topic_message(item, thread_id, max_retries=5, is_new=False):
@@ -437,6 +486,7 @@ def scan_all_topics():
     global first_run_completed
     
     load_analyzed_item()
+    load_sent_items()
     session = requests.Session()
     
     # Первый запуск определяется только один раз за сессию
@@ -510,10 +560,21 @@ def scan_all_topics():
             for item in new_items:
                 item_id = item["id"]
                 
+                # Проверяем, не был ли товар уже отправлен
+                if is_item_already_sent(item_id):
+                    logger.info(f"Item already sent, skipping: {item['title']} (ID: {item_id})")
+                    list_analyzed_items.append(item_id)
+                    save_analyzed_item(item_id)
+                    continue
+                
                 if KleinanzeigenConfig.telegram_bot_token and KleinanzeigenConfig.telegram_chat_id:
                     success = send_telegram_topic_message(item, thread_id, is_new=True)
                     if success:
                         logger.info(f"New item notification sent: {item['title']}")
+                        save_sent_item(item, thread_id, success=True)
+                    else:
+                        logger.warning(f"Failed to send new item: {item['title']}")
+                        save_sent_item(item, thread_id, success=False)
                     time.sleep(2) # Пауза между отправкой новых
                 
                 list_analyzed_items.append(item_id)

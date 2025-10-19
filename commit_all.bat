@@ -28,8 +28,9 @@ echo.
 echo Checking if remote origin exists...
 git remote -v | findstr origin >nul
 if %errorlevel% neq 0 (
-    echo No remote origin found. Please run setup_github.bat first.
-    goto :end
+    echo No remote origin found. Setting up GitHub repository...
+    git remote add origin https://github.com/2extndd/KFS2.git
+    git branch -M main
 )
 
 echo.
